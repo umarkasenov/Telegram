@@ -1,0 +1,4 @@
+# @dp.message(Command("start"))
+# async def start(message: types.Message):
+#     pprint(message)
+#     await message.answer(f"Привет! {message.from_user.full_name}, ваш id: {message.from_user.id}")
