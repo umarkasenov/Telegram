@@ -13,5 +13,7 @@ async def set_commands():
     await bot.set_my_commands([
         types.BotCommand(command="start", description="Старт"),
         types.BotCommand(command="pic", description="Отправить картинку"),
-
+        types.BotCommand(command="opros", description="опрос")
+        # types.BotCommand(command="about as",description="о нас"),
+        # types.BotCommand(command="store", description="магаз")
     ])

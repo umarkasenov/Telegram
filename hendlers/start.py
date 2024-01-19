@@ -73,12 +73,6 @@ async def store2(message: types.Message):
     await message.answer("anime", reply_markup=kb)
 
 
-
-
-
-
-
-
 @start_router.callback_query(F.data == "about_us")
 async def about_us(callback: types.CallbackQuery):
     await callback.answer()
