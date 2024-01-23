@@ -34,8 +34,8 @@ async def store(callback: types.CallbackQuery):
     kb = types.ReplyKeyboardMarkup(
         keyboard=[
             [
-                types.KeyboardButton(text="манга"),
-                types.KeyboardButton(text="аниме")
+                types.KeyboardButton(text="manga"),
+                types.KeyboardButton(text="anime")
             ]
         ], resize_keyboard=True
     )
@@ -43,14 +43,14 @@ async def store(callback: types.CallbackQuery):
 
 
 
-@start_router.message(F.text == "манга")
+@start_router.message(F.text == "manga")
 async def store1(message: types.Message):
     kb = types.ReplyKeyboardMarkup(
         keyboard=[
             [
-                types.KeyboardButton(text="наруто"),
-                types.KeyboardButton(text="блич"),
-                types.KeyboardButton(text="ghsab")
+                types.KeyboardButton(text="Milli-seconds"),
+                types.KeyboardButton(text="Lord"),
+                types.KeyboardButton(text="Dark")
             ]
         ], resize_keyboard=True
     )
@@ -58,23 +58,22 @@ async def store1(message: types.Message):
     await message.answer("choose manga", reply_markup=kb)
 
 
-@start_router.message(F.text == "аниме")
+@start_router.message(F.text == "anime")
 async def store2(message: types.Message):
     kb = types.ReplyKeyboardMarkup(
         keyboard=[
             [
-                types.KeyboardButton(text="класс"),
-                types.KeyboardButton(text="потриатизм"),
-                types.KeyboardButton(text="арвыфи")
+                types.KeyboardButton(text="Class superiority"),
+                types.KeyboardButton(text="Patriotism Mariarti"),
+                types.KeyboardButton(text="One Piece")
             ]
         ], resize_keyboard=True
     )
 
-    await message.answer("anime", reply_markup=kb)
+    await message.answer("choose anime", reply_markup=kb)
 
 
 @start_router.callback_query(F.data == "about_us")
 async def about_us(callback: types.CallbackQuery):
     await callback.answer()
-
-    await callback.message.answer("Здесь мы хотим рассказать о нашей компании")
+    await callback.message.answer("Мы продаем книги про аниме")
