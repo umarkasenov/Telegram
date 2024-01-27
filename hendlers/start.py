@@ -22,6 +22,7 @@ async def start(message: types.Message):
             ],
             [
                 types.InlineKeyboardButton(text="Магазин", callback_data="store"),
+                types.InlineKeyboardButton(text="shop", callback_data="shop"),
             ]
         ]
     )
@@ -87,4 +88,16 @@ async def store3(message: types.Message):
 @start_router.callback_query(F.data == "about_us")
 async def about_us(callback: types.CallbackQuery):
     await callback.answer()
-    await callback.message.answer("Мы продаем книги про аниме")
+    await callback.message.answer("Здесь в можете найти фильмы по вашему вкусу"
+                                  "По всем вопрсам можете писать в WhatsApp 0706101906")
+
+#
+# @start_router.message(Command("shop"))
+# async def start(message : types.Message):
+#     kb = types.InlineKeyboardMarkup(
+#         inline_keyboard=[
+#             [types.InlineKeyboardButton(text='shop', callback_data="shop"),
+#              types.InlineKeyboardButton(text='all', callback_data="all")]
+#         ]
+#     )
+#     await message.answer(f"привет {message.from_user.username}", reply_markup=kb)

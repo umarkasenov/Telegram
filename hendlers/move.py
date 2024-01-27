@@ -7,38 +7,39 @@ pro_router = Router()
 async def products(call: types.CallbackQuery):
     kb = types.InlineKeyboardMarkup(
         inline_keyboard=[
-            [types.InlineKeyboardButton(text='book', callback_data="book"),
-             types.InlineKeyboardButton(text='comics', callback_data="comics"),
-             types.InlineKeyboardButton(text='manga', callback_data="manga")]
+            [types.InlineKeyboardButton(text='drama', callback_data="drama"),
+             types.InlineKeyboardButton(text='comedy', callback_data="comedy"),
+             types.InlineKeyboardButton(text='romantic', callback_data="romantic"),
+             types.InlineKeyboardButton(text="all", callback_data="all")]
         ]
     )
     await call.message.answer('что вы хотите посмотреть', reply_markup=kb)
 
 
-@pro_router.callback_query(F.data == 'book')
+@pro_router.callback_query(F.data == 'drama')
 async def book(call: types.CallbackQuery):
     pro = get_genre(1)
     for movies in pro:
         await call.message.answer(f'название {movies[1]}\n'
-                                  f'цена {movies[2]}')
+                                  f'рейтинг {movies[2]}')
 
-@pro_router.callback_query(F.data == 'comics')
+@pro_router.callback_query(F.data == 'comedy')
 async def comics(call: types.CallbackQuery):
     pro = get_genre(2)
     for movies in pro:
         await call.message.answer(f'название {movies[1]}\n'
-                                  f'цена {movies[2]}')
+                                  f'рейтинг {movies[2]}')
 
-@pro_router.callback_query(F.data == 'manga')
+@pro_router.callback_query(F.data == 'romantic')
 async def manga(call: types.CallbackQuery):
     pro = get_genre(3)
     for movies in pro:
         await call.message.answer(f'название {movies[1]}\n'
-                                  f'цена {movies[2]}')
+                                  f'рейтинг {movies[2]}')
 
 @pro_router.callback_query(F.data == 'all')
 async def product(call: types.CallbackQuery):
     pro = get_movies()
     for movies in pro:
         await call.message.answer(f'название {movies[1]}\n'
-                                  f'цена {movies[2]}')
+                                  f'рейтинг {movies[2]}')

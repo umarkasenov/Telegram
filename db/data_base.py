@@ -42,7 +42,6 @@ def fill_tables():
     if result == 0:
         # Заполняем таблицу genre
         sql.executemany("""INSERT INTO genre (genre) VALUES (?)""", [
-            ("romantic",),
             ("drama",),
             ("comedy",)
         ])
@@ -60,11 +59,11 @@ def fill_tables():
 def add_more_movies():
     # Заполняем таблицу movies дополнительными данными
     sql.executemany("""INSERT INTO movies (name, rating, year, genre_id) VALUES (?, ?, ?, ?)""", [
-        # ("Movie 1", 80, 2021, 1),  # 1 corresponds to "romantic" in the genre table
-        # ("Movie 2", 88, 2015, 2),  # 2 corresponds to "drama" in the genre table
-        # ("Movie 3", 95, 2022, 3),  # 3 corresponds to "comedy" in the genre table
-        # ("Movie 4", 95, 2022, 3),  # 3 corresponds to "comedy" in the genre table
-        # ("Movie 5", 95, 2022, 3)  # 3 corresponds to "comedy" in the genre table
+        # ("Inception", 90, 2010, 1),
+        # ("Pulp Fiction", 94, 1994, 2),
+        # ("The Grand Budapest Hotel", 87, 2014, 3),
+        # ("The Matrix", 88, 1999, 1),
+        # ("Forrest Gump", 92, 1994, 2)
     ])
 
     db.commit()
@@ -94,7 +93,7 @@ if __name__ == '__main__':
     # populate_db()
     create_tables()
     print(get_genre(3))
-
+#
 # # Создаем таблицы, если они не существуют
 # create_tables()
 #
