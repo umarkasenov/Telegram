@@ -2,6 +2,8 @@ import sqlite3
 from pathlib import Path
 from pprint import pprint
 
+db = sqlite3.connect('server.db')
+sql = db.cursor()
 
 def init_db():
     """
@@ -14,164 +16,93 @@ def init_db():
     cursor = db.cursor()
 
 def create_tables():
-    """
-    Создание таблиц
-    """
-    cursor.execute("""
-        --sql
-        DROP TABLE IF EXISTS courses;
-    """)
-    cursor.execute("""
-        --sql
-        DROP TABLE IF EXISTS teachers;
-    """)
-    cursor.execute("""
-        --sql
-        CREATE TABLE IF NOT EXISTS courses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            description TEXT,
-            duration INTEGER
-        );
-    """)
-    cursor.execute("""
-        --sql
-        CREATE TABLE IF NOT EXISTS teachers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            course_id INTEGER,
-            FOREIGN KEY (course_id) REFERENCES courses(id)
-        )
-    """)
-    db.commit()
+    sql.execute("""CREATE TABLE IF NOT EXISTS genre (
+        id INTEGER PRIMARY KEY,
+        genre TEXT
+    )""")
 
-def populate_db():
-    """
-    Заполнение таблиц
-    """
-    cursor.execute("""
-        --sql
-        INSERT INTO courses (name, description, duration) VALUES
-            ("naruto", "Описание", 5),
-            ("blich", "Описание", 5),
-            ("one piece", "Описание", 6),
-            ("baron", "Описание", 6),
-            ("gun", "Описание", 4)
-        """
-    )
-    cursor.execute("""
-        INSERT INTO teachers (name, course_id) VALUES
-        ("umar", 1),
-        ("Igor", 2),
-        ("nurbol", 5)
-    """)
+    sql.execute("""CREATE TABLE IF NOT EXISTS movies (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        rating INTEGER,
+        year INTEGER,
+        genre_id INTEGER,
+        FOREIGN KEY (genre_id) REFERENCES genre (id)
+    )""")
+
     db.commit()
 
 
-def get_courses():
-    """
-    Получение данных о всех курсах
-    """
-    cursor.execute("""
-        --sql
-        SELECT * FROM courses
+def fill_tables():
+    # Проверяем, существует ли уже хотя бы одна запись в таблице movies
+    sql.execute("SELECT COUNT(*) FROM movies")
+    result = sql.fetchone()[0]
+
+    # Если нет записей, то заполняем таблицы данными
+    if result == 0:
+        # Заполняем таблицу genre
+        sql.executemany("""INSERT INTO genre (genre) VALUES (?)""", [
+            ("romantic",),
+            ("drama",),
+            ("comedy",)
+        ])
+
+        # Заполняем таблицу movies
+        sql.executemany("""INSERT INTO movies (name, rating, year, genre_id) VALUES (?, ?, ?, ?)""", [
+            ("The Shawshank Redemption", 95, 2020, 1),  # 1 corresponds to "romantic" in the genre table
+            ("The Godfather", 96, 2010, 2),  # 2 corresponds to "drama" in the genre table
+            ("The Dark Knight", 87, 2029, 3)  # 3 corresponds to "comedy" in the genre table
+        ])
+
+        db.commit()
+
+
+def add_more_movies():
+    # Заполняем таблицу movies дополнительными данными
+    sql.executemany("""INSERT INTO movies (name, rating, year, genre_id) VALUES (?, ?, ?, ?)""", [
+        # ("Movie 1", 80, 2021, 1),  # 1 corresponds to "romantic" in the genre table
+        # ("Movie 2", 88, 2015, 2),  # 2 corresponds to "drama" in the genre table
+        # ("Movie 3", 95, 2022, 3),  # 3 corresponds to "comedy" in the genre table
+        # ("Movie 4", 95, 2022, 3),  # 3 corresponds to "comedy" in the genre table
+        # ("Movie 5", 95, 2022, 3)  # 3 corresponds to "comedy" in the genre table
+    ])
+
+    db.commit()
+
+
+def get_movies():
+
+    sql.execute("""
+        SELECT * FROM movies
     """)
-    # return cursor.fetchone()
-    return cursor.fetchall()
+    return sql.fetchall()
 
-
-def get_courses_with_teachers():
-    """
-    Получение данных о курсах и их преподавателях
-    """
-    cursor.execute("""
-        --sql
-        SELECT c.name, t.name FROM courses AS c
-        JOIN teachers AS t ON c.id = t.course_id
-    """)
-    return cursor.fetchall()
-
-
-def get_teachers():
-    cursor.execute("""
-        --sql
-        SELECT c.name, t.name FROM teachers AS t
-        JOIN courses AS c ON c.id = t.course_id
-    """)
-    return cursor.fetchall()
-
-
-def get_course_data(id: int):
-    """
-    Получение данных о курсе и его преподавателе по id курса
-    """
-    # cursor.execute("""
-    #     --sql
-    #     SELECT name, description, duration FROM courses
-    #     WHERE id = :cid
-    # """, {"cid": id})
-    cursor.execute("""
-        --sql
-        SELECT c.name, c.description, c.duration, t.name FROM courses AS c
-        JOIN teachers AS t ON c.id = t.course_id
-        WHERE c.id = :cid
+def get_move(id):
+    sql.execute("""
+        SELECT * FROM movies WHERE id = :cid
     """, {"cid": id})
-    return cursor.fetchone()
+    return sql.fetchone()
 
+def get_genre(id):
+    sql.execute("""
+        SELECT * FROM movies WHERE genre_id = :cid
+    """, {"cid": id})
+    return sql.fetchall()
 
-def get_course_data_by_name(name: str):
-    """
-    Получение данных о курсе и его преподавателе по названию курса
-    """
-    cursor.execute("""
-        --sql
-        SELECT c.name, c.description, c.duration, t.name FROM courses AS c
-        JOIN teachers AS t ON c.id = t.course_id
-        WHERE c.name = :cname
-    """, {"cname": name})
-    return cursor.fetchone()
-
-
-def get_teachers_by_course_name(name: str):
-    """
-    Получение имен проподвателей по названию курса
-    """
-    cursor.execute("""
-        --sql
-        SELECT teachers.name FROM teachers 
-        WHERE teachers.course_id = (
-            SELECT id FROM courses WHERE name = :cname
-        )
-    """, {"cname": name})
-    return cursor.fetchall()
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     init_db()
+    # populate_db()
     create_tables()
-    populate_db()
-    # pprint(get_courses())
-    # pprint(get_courses_with_teachers())
-    # pprint(get_teachers())
-    # pprint(get_course_data(1))
-    pprint(get_teachers_by_course_name("Бекенд"))
+    print(get_genre(3))
 
-# SQL - Structured Query Language Структурированный язык запросов
-# СУБД - Система управления базами данных
-# Реляцтонные базы данных Ralational databases
-# Relation - связь, отношение
-# Primary key - первичный ключ
-# Foreign key - внешний ключ
-
-# Courses:
-# 1, "Бекенд", "Описание бекенда", 5,     1
-# 2, "Фронтенд", "Описание фронтенда", 5, 1
-# 3, "iOS", "Описание iOS", 6,            2
-# 4, "Android", "Описание Android", 6,    4
-# 5, "Тестирование", "Описание тестирования", 4, 3
-
-# Teachers:
-# 1, "Игорь",
-# 2, "Алексей"
-# 3, "Нурдин"
-# 4, "Бекболот"
+# # Создаем таблицы, если они не существуют
+# create_tables()
+#
+# # Заполняем таблицы данными, если это еще не было сделано
+# fill_tables()
+#
+# # Добавляем еще несколько фильмов
+# add_more_movies()
+#
+# # Закрываем соединение с базой данных
+# db.close()

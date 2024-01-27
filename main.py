@@ -6,7 +6,7 @@ from hendlers import (
     pic_router,
     echo_router,
     opros_router,
-    books_router
+    pro_router
 )
 
 
@@ -15,7 +15,7 @@ async def main():
     dp.include_router(start_router)
     dp.include_router(pic_router)
     dp.include_router(opros_router)
-    dp.include_router(books_router)
+    dp.include_router(pro_router)
 
     dp.include_router(echo_router)
     # запуск бота

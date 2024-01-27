@@ -73,6 +73,17 @@ async def store2(message: types.Message):
     await message.answer("choose anime", reply_markup=kb)
 
 
+@start_router.message(F.text == "Class superiority")
+async def store3(message: types.Message):
+    kb = types.ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                types.KeyboardButton(text="https://jut.su/shugi-no-kyoushitsu/season-3/")
+            ]
+        ], resize_keyboard=True
+    )
+    await message.answer(".", reply_markup=kb)
+
 @start_router.callback_query(F.data == "about_us")
 async def about_us(callback: types.CallbackQuery):
     await callback.answer()
