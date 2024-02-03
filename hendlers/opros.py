@@ -5,7 +5,6 @@ from aiogram.fsm.context import FSMContext
 
 opros_router = Router()
 
-
 class FSM(StatesGroup):
     name = State()
     gender = State()
@@ -90,3 +89,4 @@ async def literature(message: types.Message, state: FSMContext):
     await state.set_state(FSM.literature)
     await state.update_data(literature=message.text)
     await state.clear()
+    await state.update_data()
